@@ -23,7 +23,6 @@ export namespace ModelsAuth {
   export interface UserProfile {
       name: string;
       photo: string;
-      age: number;
       id: string;
       email: string;
       roles?: {

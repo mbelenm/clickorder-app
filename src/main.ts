@@ -18,7 +18,7 @@ import { Capacitor } from '@capacitor/core';
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular(),
+    provideIonicAngular({innerHTMLTemplatesEnabled: true}),
     provideRouter(routes, withPreloading(PreloadAllModules)),
 
     // firebase
@@ -37,7 +37,7 @@ bootstrapApplication(AppComponent, {
     provideFirestore(() => getFirestore()), //obtener el mmódulo de firestore
     provideAuth(() => getAuth()), //obtener el modulo de autenticación
     provideFunctions(() => getFunctions()), //obtener el modulo de funciones
-    provideStorage(() => getStorage()),
+    provideStorage(() => getStorage()), //obtener el modulo de almacenamiento
     provideAnalytics(() => getAnalytics() ),
     ScreenTrackingService,
     UserTrackingService,
