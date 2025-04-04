@@ -39,7 +39,7 @@ export class RequestLoginComponent  implements OnInit {
 
   }
 
-  async getQueryParams() {
+  /*async getQueryParams() {
     const queryParams: any = this.route.snapshot.queryParams;
     console.log('queryParams -> ', queryParams);
     if (queryParams.provider && queryParams.intentId) {
@@ -49,7 +49,31 @@ export class RequestLoginComponent  implements OnInit {
       this.router.navigate(['/user/request-login'], { queryParams: { intentId: queryParams.intentId}})
     }
 
+  }*/
+
+    async getQueryParams() {
+      const queryParams: any = this.route.snapshot.queryParams;
+      console.log('queryParams -> ', queryParams);
+
+      if (queryParams.provider && queryParams.intentId) {
+          const provider = queryParams.provider;
+          await this.interactionService.showLoading('Procesando...');
+
+          try {
+              await this.authenticationService.loginWithProvider(provider);
+          } catch (error) {
+              console.error('Error en loginWithProvider:', error);
+          }
+
+          this.interactionService.dismissLoading();
+
+          // Solo redirigir si el usuario está autenticado
+          if (this.authenticationService.getCurrentUser()) {
+              this.router.navigate(['/user/profile']); // Redirigir a una página de perfil o dashboard
+          }
+      }
   }
+
 
   /*async getTokenOfProvider() {
       await this.interactionService.showLoading('Redirigiendo...')
@@ -65,7 +89,7 @@ export class RequestLoginComponent  implements OnInit {
       }
   }*/
 
-      async getTokenOfProvider() {
+      /*async getTokenOfProvider() {
         await this.interactionService.showLoading('Redirigiendo...');
 
         try {
@@ -90,8 +114,35 @@ export class RequestLoginComponent  implements OnInit {
         } finally {
             this.interactionService.dismissLoading();
         }
-     }
+     }*/
 
+     async getTokenOfProvider() {
+      await this.interactionService.showLoading('Redirigiendo...');
+      try {
+          const result = await this.authenticationService.getRedirectResult();
+          console.log('getRedirectResult -> ', result);
+
+          if (!result || !result.user) {
+              console.log('No se recibió un resultado de redirección válido');
+              this.interactionService.dismissLoading();
+              return;
+          }
+
+          const credential = OAuthProvider.credentialFromResult(result);
+          console.log('credential -> ', credential);
+
+          if (credential) {
+              const token = credential.idToken || credential.accessToken;
+              await this.saveToken(token);
+          } else {
+              console.log('No se pudo obtener la credencial');
+          }
+      } catch (error) {
+          console.error('Error al obtener el resultado de redirección:', error);
+      } finally {
+          this.interactionService.dismissLoading();
+      }
+  }
 
 
   async saveToken(token: string) {
@@ -107,7 +158,6 @@ export class RequestLoginComponent  implements OnInit {
       console.log('guardado token con éxito');
     }
   }
-
 
 
 }

@@ -191,15 +191,22 @@ export class CompletarRegistroComponent implements OnInit {
       await this.interactionService.showLoading('Procesando...');
       const data = this.datosFormCompleteRegistro.value;
       console.log('valid -> ', data);
+
       try {
+        const user = this.authenticationService.getCurrentUser();
+        if (!user) {
+          console.log("Error: Usuario no autenticado");
+          this.interactionService.presentAlert("Error", "Usuario no autenticado");
+          return;
+        }
+
         let photo: any = data.photo;
 
-        // 🔹 Si no hay foto, usar la actual o una por defecto
         if (!photo) {
-          photo = this.user.photoURL || 'https://www.shutterstock.com/image-vector/young-smiling-man-avatar-brown-600nw-2261401207.jpg';
+          photo = user.photoURL || 'https://www.shutterstock.com/image-vector/young-smiling-man-avatar-brown-600nw-2261401207.jpg';
         } else if (typeof photo !== 'string') {
           const foto: File = data.photo;
-          const folder = `PhotosPerfil/${this.user.uid}`;
+          const folder = `PhotosPerfil/${user.uid}`;
           const snapshot = await this.storageService.uploadFile(folder, foto.name, foto);
           photo = snapshot.ref.fullPath;
         }
@@ -209,7 +216,6 @@ export class CompletarRegistroComponent implements OnInit {
           photoURL: photo
         };
 
-        const user = this.authenticationService.getCurrentUser();
         await this.authenticationService.updateProfile(profile);
 
         const datosUser: Models.Auth.UserProfile = {
@@ -222,17 +228,20 @@ export class CompletarRegistroComponent implements OnInit {
 
         console.log('datosUser -> ', datosUser);
 
-        // 🔹 Establecer rol por defecto
-        const responseRol = await this.functionsService.call<any, any>('setRol', {});
+        // 🔹 Llamada a setRol con parámetros correctos
+        const responseRol = await this.functionsService.call<any, any>('setRol', { userId: user.uid, role: 'cliente' });
         console.log('response -> ', responseRol);
 
         await this.firestoreService.createDocument(Models.Auth.PathUsers, datosUser, user.uid);
         console.log('Registro completado con éxito');
 
         this.interactionService.showToast('Registro completado con éxito');
-        await this.router.navigate(['/user/perfil']);
+        await this.router.navigate(['/user/perfil'], { replaceUrl: true });
         this.interactionService.dismissLoading();
-        window.location.reload();
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       } catch (error) {
         console.log('registrarse error -> ', error);
         this.interactionService.presentAlert('Error', 'Ocurrió un error, intenta nuevamente');
@@ -240,8 +249,7 @@ export class CompletarRegistroComponent implements OnInit {
     }
 
     this.cargando = false;
-  }
-
+}
   async viewPreview(input: HTMLInputElement) {
     if (input.files.length) {
       const files = input.files;

@@ -1,11 +1,11 @@
 import { MulticastMessage, getMessaging } from "firebase-admin/messaging";
-import { ModelsFunctions } from "./models";
+import { ModelsFunctions } from "./models.js";
 import { getFirestore } from "firebase-admin/firestore";
 
 const messaging = getMessaging()
 const firestore = getFirestore();
 
-const sendNotificationPush = async (tokens: string[], message: {title: string, content: string, image?: string}, data: any = {}, tag: string = null) => {
+const sendNotificationPush = async (tokens: string[], message: {title: string, content: string, image?: string}, data: any = {}, tag: string | null = null) => {
 
     console.log('sendNotification push -> ', tokens.length);
     const multicastMessage: MulticastMessage = {
@@ -45,13 +45,18 @@ const sendNotificationPush = async (tokens: string[], message: {title: string, c
 
     }
 
-    if (message.image) {
-        multicastMessage.notification.imageUrl = message.image;
-    }
-    if (tag) {
-        multicastMessage.android.notification.tag = tag;
-        multicastMessage.apns.payload.aps.threadId = tag;
-    }
+    if (message.image && multicastMessage.notification) {
+      multicastMessage.notification.imageUrl = message.image;
+  }
+
+  if (tag) {
+      if (multicastMessage.android?.notification) {
+          multicastMessage.android.notification.tag = tag;
+      }
+      if (multicastMessage.apns?.payload?.aps) {
+          multicastMessage.apns.payload.aps.threadId = tag;
+      }
+  }
 
     return await messaging.sendEachForMulticast(multicastMessage);
 };

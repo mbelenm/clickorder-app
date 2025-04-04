@@ -7,6 +7,7 @@ export const environment = {
   firebaseConfig: {
     apiKey: "AIzaSyCN_0lNQX4v5nGfkVCAZnuXcMBmCwACLw0",
     authDomain: "pedienclickorder.firebaseapp.com",
+    //authDomain: "pedienclickorder.webapp.com",
     projectId: "pedienclickorder",
     storageBucket: "pedienclickorder.firebasestorage.app",
     messagingSenderId: "527975308182",

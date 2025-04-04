@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, inject } from '@angular/core';
+/*import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { AuthenticationService } from '../../../firebase/authentication.service';
 import { Models } from 'src/app/models/models';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -65,26 +65,26 @@ export class LoginComponent  implements OnInit {
       this.enableLoginWithEmailAndPassword = true;
       return;
     }
-      this.authenticationService.loginWithProvider(provider.id);
-     if (Capacitor.isNativePlatform()) {
-      await this.interactionService.showLoading('Procesando...')
+    await this.interactionService.showLoading('Procesando...');
+    if (Capacitor.isNativePlatform()) {
+      // Si estamos en una plataforma nativa (ej. móvil)
       const token = await this.authenticationService.getTokenOfProvider(provider.id);
       console.log(`token: ${token} para hacer el login con -> ${provider.id}`);
       const response = await this.authenticationService.loginWithTokenOfProvider(provider.id, token);
       this.interactionService.dismissLoading();
+
       console.log('response loginwithprovider -> ', response);
       if (response) {
         const user = response.user;
         this.interactionService.showToast(`Bienvenido ${user.displayName}`);
         setTimeout(() => {
-          this.router.navigate(['user', 'perfil'], {replaceUrl: true})
+          this.router.navigate(['user', 'perfil'], { replaceUrl: true });
         }, 200);
       }
     } else {
-      await this.interactionService.showLoading('Procesando...')
-      this.authenticationService.loginWithProvider(provider.id)
-     }
-
+      // Si estamos en una plataforma web
+      this.authenticationService.loginWithProvider(provider.id);
+    }
   }
 
 
@@ -133,10 +133,10 @@ export class LoginComponent  implements OnInit {
 
 
 
-}
+}*/
 
 
-/*import { Component, OnInit, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { AuthenticationService } from '../../../firebase/authentication.service';
 import { Models } from 'src/app/models/models';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -270,4 +270,4 @@ export class LoginComponent implements OnInit {
     }
   }
 }
-*/
+

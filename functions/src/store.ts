@@ -1,14 +1,17 @@
 import {getFirestore} from "firebase-admin/firestore";
-import { Notifications } from "./notificacions";
+//import { Notifications } from "./notificacions";
 import { onDocumentCreated, onDocumentUpdated } from "firebase-functions/v2/firestore";
-import { ModelsFunctions } from "./models";
+//import { ModelsFunctions } from "./models";
+import { Notifications } from "./notificacions.js";
+import { ModelsFunctions } from "./models.js";
+
 
 const firestore = getFirestore();
 
 
 export const newPedido = onDocumentCreated("Users/{userId}/pedidos/{pedidoId}", async (event) => {
       console.log('newPedido -> ', event.params.userId);
-      const pedido = event.data.data() as ModelsFunctions.Pedido;
+      const pedido = event.data?.data() as ModelsFunctions.Pedido;
       // obtener todos los admins para enviarles una notificación
       const response = await firestore.collection('Users').where('roles.admin', '==', true).get()
       if (response.size) {
@@ -54,8 +57,8 @@ export const newPedido = onDocumentCreated("Users/{userId}/pedidos/{pedidoId}", 
 
 export const cambioEstadoPedido = onDocumentUpdated("Users/{userId}/pedidos/{pedidoId}", async (event) => {
   console.log('cambioEstadoPedido');
-  const pedidoBefore = event.data.before.data() as ModelsFunctions.Pedido;
-  const pedidoAfter = event.data.after.data() as ModelsFunctions.Pedido;
+  const pedidoBefore = event.data?.before?.data() as ModelsFunctions.Pedido;
+  const pedidoAfter = event.data?.after?.data() as ModelsFunctions.Pedido;
   // console.log('pedidoBefore -> ', pedidoBefore);
   // console.log('pedidoAfter -> ', pedidoAfter);
   if (pedidoBefore.state != pedidoAfter.state) {

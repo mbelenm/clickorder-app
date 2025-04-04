@@ -1,8 +1,12 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "NodeNext",
+    "esModuleInterop": true,
+    "moduleResolution": "nodenext",
     "noImplicitReturns": true,
     "noUnusedLocals": true,
+    "allowSyntheticDefaultImports": true,  // 👈 Agrega esto
+    "resolveJsonModule": true,
     "outDir": "lib",
     "sourceMap": true,
     "strict": true,

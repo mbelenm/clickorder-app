@@ -1,14 +1,20 @@
+import admin from "firebase-admin";
 import {getFirestore} from "firebase-admin/firestore";
 import { getAuth} from "firebase-admin/auth";
 import { onCall, HttpsError} from "firebase-functions/v2/https";
-import { ModelsFunctions} from "./models";
-import * as cors from "cors";
+//import { ModelsFunctions} from "./models";
+import { ModelsFunctions } from "./models.js";
 
+//import * as cors from "cors";
+//import cors from "cors";
+if (admin.apps.length === 0) {
+  admin.initializeApp();
+}
 const firestore = getFirestore();
 const auth = getAuth();
 
 
-const corsHandler = cors({ origin: true });
+//const corsHandler = cors({ origin: true });
 
 export const initAdmin = async () => {
 
@@ -18,7 +24,7 @@ export const initAdmin = async () => {
     roles: {
       admin: true
     },
-    uid: 'SN3HD2uXKTVT7TDeydmlLxscWmC3'
+    uid: 'EJmgLQIHuxbAJze7acrh1Fr4t2E2'
   }
   const claims = {
     roles: data.roles
@@ -27,12 +33,15 @@ export const initAdmin = async () => {
   await firestore.doc(`Users/${data.uid}`).update(claims)
 
   console.log('set claim con éxito');
+  return {ok: true}
 
 };
 
 export const setRol = onCall({cors: true}, async (request) => {
 
-     console.log('setRol user -> ', request.auth.token);
+  if (request.auth) {
+    console.log('setRol user -> ', request.auth.token);
+  }
 
     let valid = true;
      // valid = await isRol(request.auth.uid, ['admin']);

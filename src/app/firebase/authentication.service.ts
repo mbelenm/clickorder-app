@@ -311,6 +311,8 @@ import {
 import { FirestoreService } from './firestore.service';
 import { environment } from 'src/environments/environment';
 import { Models } from '../models/models';
+import { Browser } from '@capacitor/browser';
+
 
 @Injectable({
   providedIn: 'root'
@@ -386,13 +388,27 @@ export class AuthenticationService {
     return deleteUser(this.auth.currentUser);
   }
 
-  loginWithProvider(providerId: string) {
+  /*loginWithProvider(providerId: string) {
     let provider;
     if (providerId === 'google'){
       provider = new GoogleAuthProvider();
     }
       signInWithRedirect(this.auth, provider);
-  }
+  }*/
+
+      async loginWithProvider(providerId: string) {
+        let provider;
+        if (providerId === 'google') {
+            provider = new GoogleAuthProvider();
+        }
+
+        try {
+            await signInWithRedirect(this.auth, provider);
+        } catch (error) {
+            console.error('Error en loginWithProvider:', error);
+        }
+    }
+
 
   async getTokenOfProvider(providerId: string) {
     console.log('getTokenOfProvider -> ', providerId);
@@ -410,12 +426,9 @@ export class AuthenticationService {
 
           }
         });
-
-
-
-
         const link = `https://${environment.firebaseConfig.authDomain}/user/request-login?provider=${providerId}&intentId=${id}`;
         console.log('Link de autenticación -> ', link);
+        await Browser.open({ url: link });
       } catch (error) {
         console.error('Error en getTokenOfProvider:', error);
         resolve(null);
@@ -423,7 +436,10 @@ export class AuthenticationService {
     });
   }
 
-  async loginWithTokenOfProvider(providerId: string, token: string) {
+
+
+
+ /* async loginWithTokenOfProvider(providerId: string, token: string) {
     if (!token) {
       console.error("Error: Token inválido o vacío.");
       return null;
@@ -457,6 +473,44 @@ export class AuthenticationService {
       console.error("Error en loginWithTokenOfProvider:", error);
       return null;
     }
+  }*/
+
+    async loginWithTokenOfProvider(providerId: string, token: string) {
+      if (!token) {
+          console.error("Error: Token inválido o vacío.");
+          return null;
+      }
+
+      let credential: OAuthCredential | null = null;
+
+      try {
+          switch (providerId) {
+              case 'google':
+                  credential = GoogleAuthProvider.credential(token);
+                  break;
+              case 'apple':
+                  credential = new OAuthProvider('apple.com').credential({ idToken: token });
+                  break;
+              case 'facebook':
+                  credential = FacebookAuthProvider.credential(token);
+                  break;
+              default:
+                  console.error("Error: Proveedor no soportado ->", providerId);
+                  return null;
+          }
+
+          if (!credential) {
+              console.error("Error: No se pudo generar la credencial.");
+              return null;
+          }
+
+          const userCredential = await signInWithCredential(this.auth, credential);
+          console.log("Usuario autenticado correctamente:", userCredential.user);
+          return userCredential;
+      } catch (error) {
+          console.error("Error en loginWithTokenOfProvider:", error);
+          return null;
+      }
   }
 
   getRedirectResult() {
