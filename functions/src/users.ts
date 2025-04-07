@@ -16,7 +16,7 @@ const auth = getAuth();
 
 //const corsHandler = cors({ origin: true });
 
-export const initAdmin = async () => {
+ export const initAdmin = async () => {
 
   console.log(' initAdmin ');
 
@@ -82,5 +82,5 @@ export const setRol = onCall({cors: true}, async (request) => {
 
 export const Users = {
     setRol,
-    initAdmin
+    //initAdmin
 }
