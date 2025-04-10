@@ -33,5 +33,11 @@
  */
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+@import "@ionic/angular/css/palettes/dark.class.css";
+//@import '@ionic/angular/css/palettes/dark.system.css';
+
+
+ion-split-pane {
+  --side-max-width: 100 !important;
+  --side-width: 100 !important;
+}

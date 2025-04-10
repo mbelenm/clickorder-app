@@ -1,0 +1,63 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="light">
+    <ion-title>Categoria</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/backoffice/ajustes/categorias"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" color="light">
+  <ion-header collapse="condense">
+    <ion-toolbar color="light">
+      <ion-title size="large">Categoria</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-grid fixed>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="11" sizeMd="6">
+        <form [formGroup]="categoria" (ngSubmit)="save()">
+          <ion-input
+            type="text"
+            label="Nombre"
+            placeholder=""
+            fill="outline"
+            mode="md"
+            errorText="Este campo es requerido"
+            labelPlacement="floating"
+            formControlName="name"
+            ngDefaultControl>
+          </ion-input>
+
+          <br>
+
+          <ion-textarea
+            label="Descripción"
+            placeholder=""
+            fill="outline"
+            mode="md"
+            labelPlacement="floating"
+            formControlName="description"
+            autoGrow
+            ngDefaultControl>
+          </ion-textarea>
+
+          <br>
+
+          <ion-toolbar>
+            <ion-grid fixed class="ion-no-padding">
+              <ion-row class="ion-justify-content-end">
+                <ion-col size="12" sizeMd="6" sizeLg="4" class="ion-no-padding">
+                  <ion-button type="submit" expand="block" shape="round">
+                    Guardar
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-toolbar>
+        </form>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

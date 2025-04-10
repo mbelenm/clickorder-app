@@ -39,9 +39,9 @@ const auth = getAuth();
 
 export const setRol = onCall({cors: true}, async (request) => {
 
-  if (request.auth) {
-    console.log('setRol user -> ', request.auth.token);
-  }
+  //if (request.auth) {
+   // console.log('setRol user -> ', request.auth.token);
+  //}
 
     let valid = true;
      // valid = await isRol(request.auth.uid, ['admin']);

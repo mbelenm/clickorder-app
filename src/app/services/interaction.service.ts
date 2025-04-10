@@ -17,7 +17,7 @@ export class InteractionService {
   async showLoading(message: string = 'Cargando...') {
     this.loading = await this.loadingCtrl.create({ //mostrar al usaurio que estamos cargando
       message,
-      backdropDismiss: true,
+      backdropDismiss: false,
     });
     await this.loading.present();
   }
