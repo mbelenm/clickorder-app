@@ -18,7 +18,7 @@
   <ion-grid fixed>
     <ion-row class="ion-justify-content-center">
       <ion-col size="11" sizeMd="6">
-        <form  [formGroup]="product" (ngSubmit)="save()" > <!--(ngSubmit)="save()"-->
+        <form  [formGroup]="product" (ngSubmit)="save()" >  <!--(ngSubmit)="save()"-->
 
           <!-- name -->
           <br>
@@ -62,6 +62,7 @@
           formControlName="enlacePermanente"
           [value]="product.get('enlacePermanente').value"
           (ionInput)="product.get('enlacePermanente').setValue($event.detail.value)"></ion-input>
+
           <br>
 
 

@@ -16,6 +16,11 @@ export const routes: Routes = [
     canActivate: [guards.isRolClaim(['admin'])]
   },
   {
+    path: 'store',
+    loadChildren: () => import('./store/store.module').then((m) => m.StoreModule),
+    
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full',

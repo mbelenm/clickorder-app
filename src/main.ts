@@ -15,15 +15,21 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
 import { ScreenTrackingService, getAnalytics, provideAnalytics, UserTrackingService } from '@angular/fire/analytics';
 import { Capacitor } from '@capacitor/core';
 
+
+
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { IonicStorageModule } from '@ionic/storage-angular';
+import { importProvidersFrom } from '@angular/core';
+
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular({innerHTMLTemplatesEnabled: true}),
+    provideIonicAngular({ innerHTMLTemplatesEnabled: true }),
     provideRouter(routes, withPreloading(PreloadAllModules)),
 
     // firebase
-     provideFirebaseApp(() => {
-      const app = initializeApp(environment.firebaseConfig); //inicializa la aplicacion
+    provideFirebaseApp(() => {
+      const app = initializeApp(environment.firebaseConfig); //inicializa la aplicación
       if (Capacitor.isNativePlatform()) {
         initializeFirestore(app, {
           localCache: persistentLocalCache(),
@@ -34,14 +40,17 @@ bootstrapApplication(AppComponent, {
       }
       return app;
     }),
-    provideFirestore(() => getFirestore()), //obtener el mmódulo de firestore
-    provideAuth(() => getAuth()), //obtener el modulo de autenticación
-    provideFunctions(() => getFunctions()), //obtener el modulo de funciones
-    provideStorage(() => getStorage()), //obtener el modulo de almacenamiento
-    provideAnalytics(() => getAnalytics() ),
+    provideFirestore(() => getFirestore()), // obtener el módulo de Firestore
+    provideAuth(() => getAuth()), // obtener el módulo de autenticación
+    provideFunctions(() => getFunctions()), // obtener el módulo de funciones
+    provideStorage(() => getStorage()), // obtener el módulo de almacenamiento
+    provideAnalytics(() => getAnalytics()),
     ScreenTrackingService,
     UserTrackingService,
+    provideAnimationsAsync(),
+    importProvidersFrom(IonicStorageModule.forRoot()), // inicializa el módulo de almacenamiento de Ionic
 
+    
   ],
 });
 

@@ -51,7 +51,7 @@ export class CategoriaDetailComponent  implements OnInit {
 
           if (this.categoriaExist) {
             await this.firestoreService.updateDocument(`${path}/${this.categoriaExist.id}`, data);
-            //await this.saveCategoryInProducts();
+            await this.saveCategoryInProducts();
           } else {
             await this.firestoreService.createDocument(path, data);
           }
