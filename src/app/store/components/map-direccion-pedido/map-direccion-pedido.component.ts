@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Component, OnInit, inject } from '@angular/core';
-//import { GoogleMap, MapType, Marker, LatLngBounds } from '@capacitor/google-maps';
+import { GoogleMap, MapType, Marker, LatLngBounds } from '@capacitor/google-maps';
 import { IonBackButton, IonButtons, IonContent, IonHeader, IonTitle,
   IonToolbar, MenuController, IonModal, IonItem,
   IonLabel, IonIcon, IonButton,
@@ -7,7 +7,7 @@ import { IonBackButton, IonButtons, IonContent, IonHeader, IonTitle,
   IonFab,
   IonFabButton} from '@ionic/angular/standalone';
 import { environment } from 'src/environments/environment';
-//import { PlaceDetailComponent } from '../place-detail/place-detail.component';
+import { PlaceDetailComponent } from '../place-detail/place-detail.component';
 import { CommonModule } from '@angular/common';
 
 //import { Geolocation } from '@capacitor/geolocation';
@@ -35,7 +35,7 @@ const apiKey = environment.firebaseConfig.apiKey;
 })
 export class MapDireccionPedidoComponent  implements OnInit {
 
-  //map: GoogleMap;
+  map: GoogleMap;
   transparency: boolean = false;
   //myLocation: Place;
 
@@ -59,7 +59,7 @@ export class MapDireccionPedidoComponent  implements OnInit {
   ionViewDidLeave() {
     this.menuController.enable(true, 'main');
     this.transparency = false;
-    //this.map?.destroy();
+    this.map?.destroy();
   }
 
   ngOnInit() {
@@ -67,40 +67,44 @@ export class MapDireccionPedidoComponent  implements OnInit {
 
   async initMap() {
 
-    /*this.map = await GoogleMap.create({
+    this.map = await GoogleMap.create({
       id: 'my-map', // Unique identifier for this map instance
       element: document.getElementById('map'), // reference to the capacitor-google-map element
       apiKey: apiKey, // Your Google Maps API Key
       language: 'es',
       config: {
-        // disableDefaultUI: true,
-        // draggable: false,
+         //disableDefaultUI: true,
+         //draggable: false,  moverse en el mapa
         center: {
           // The initial position to be rendered by the map
-          lat: -2.861306136001268,
-          lng: -78.99730914182649
+          lat: -33.009168,
+          lng: -58.517219
         },
         // tilt: 45,
 
         zoom: 15, // The initial zoom level to be rendered by the map
       },
-    });*/
-    // this.map.setMapType(MapType.Satellite);
-
-    // this.map.enableCurrentLocation(true);
+    });
+    //this.map.setMapType(MapType.Satellite);
+    //this.map.enableTrafficLayer(true);
+     this.map.enableCurrentLocation(true);
 
     if (Capacitor.isNativePlatform()) {
-      //  this.map.enableCurrentLocation(true);
+        this.map.enableCurrentLocation(true);
     }
 
-    // this.setMarkerDemo();
-    // this.setPlacesDemo();
-    // this.addListeners();
+     this.setMarkerDemo();
+     this.setPlacesDemo();
+     this.addListeners();
     // this.setMyLocation();
     this.getQueryParams();
     // this.getCurrentPosition();
+    /*this.map.setOnMapClickListener( marker => {
+      console.log('MarkerClickListener -> ', marker);
+      });*/
 
   }
+
 
   getQueryParams() {
     const queryParams = this.route.snapshot.queryParams as any;
@@ -115,54 +119,125 @@ export class MapDireccionPedidoComponent  implements OnInit {
     }
 
   }
-}
-
-  /*setMarkerDemo() {
+  setMarkerDemo() {
     const marker: Marker = {
       coordinate: {
-        lat: -2.9045937,
-        lng: -78.9836343,
+        lat:  -33.009168,
+        lng: -58.517219,
       }
     }
     this.map.addMarker(marker)
   }
-
   setPlacesDemo() {
     places.forEach( async (place) => {
       const id = await this.map.addMarker(place.marker);
       place.id = id;
     });
   }
-
-  addListeners() {
-    this.map.setOnMapClickListener( res => {
-        console.log('MapClickListener -> ', res);
-        const marker: Marker = {
-          title: 'hola mundo',
-          snippet: 'un texto más largo',
-          draggable: true,
-          coordinate: {
-            lat: res.latitude,
-            lng: res.longitude,
+    addListeners() {
+      this.map.setOnMapClickListener( res => {
+          console.log('MapClickListener -> ', res);
+          const marker: Marker = {
+            title: 'Aqui Estoy',
+            snippet: 'Envio de pedido',
+            draggable: true,
+            coordinate: {
+              lat: res.latitude,
+              lng: res.longitude,
+            }
           }
-        }
-        this.map.addMarker(marker);
-    })
+          this.map.addMarker(marker);
+      })
+      this.map.setOnInfoWindowClickListener( info =>  {
+        console.log('InfoWindowClickListener -> ', info);
+      });
 
-    this.map.setOnInfoWindowClickListener( info =>  {
-      console.log('InfoWindowClickListener -> ', info);
-    });
-
-    this.map.setOnMarkerClickListener( marker => {
-      console.log('MarkerClickListener -> ', marker);
-      const exist = places.find( place => place.id == marker.markerId);
-      if (exist) {
-        this.showDetailMarker(exist)
+        this.map.setOnMarkerClickListener( marker => {
+          console.log('MarkerClickListener -> ', marker);
+          const exist = places.find( place => place.id == marker.markerId);
+          if (exist) {
+            this.showDetailMarker(exist)
+          }
+        });
       }
-    });
-  }
+      async showDetailMarker(place: Place) {
+        const modal = await this.modalController.create({
+          component: PlaceDetailComponent,
+          componentProps: { place },
+          initialBreakpoint: 0.25,
+          breakpoints: [0, 0.25]
+        });
+        await modal.present();
+        const {data} = await modal.onWillDismiss();
+        if (data) {
+          const place = data.place as Place
+          console.log('dismiss modal -> ', data);
+          //this.carritoService.setCoordenadasPedido(place.marker.coordinate);
+          this.router.navigate(['/store/carrito'])
+        }
+      }
 
-  setMyLocation() {
+}
+
+
+
+
+const places: Place[] = [
+  {
+    name: 'Lugar A',
+    description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui consequuntur eos eveniet sint sit necessitatibus perspiciatis quisquam earum! Officiis rerum pariatur incidunt, asperiores quasi veritatis fugiat ex saepe neque ab?',
+    marker: {
+      title: 'Lugar A',
+      snippet: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui consequuntur eos eveniet sint sit necessitatibus perspiciatis quisquam earum! Officiis rerum pariatur incidunt, asperiores quasi veritatis fugiat ex saepe neque ab?',
+      iconUrl: 'assets/icons/moto.png',
+      iconSize: {
+        width: 35,
+        height: 35
+      },
+      coordinate: {
+        lat: -33.0051682,
+        lng: -58.5132192
+      }
+    },
+  },
+  {
+    name: 'Lugar B',
+    description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui consequuntur eos eveniet sint sit necessitatibus perspiciatis quisquam earum! Officiis rerum pariatur incidunt, asperiores quasi veritatis fugiat ex saepe neque ab?',
+    marker: {
+      title: 'Lugar B',
+      snippet: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui consequuntur eos eveniet sint sit necessitatibus perspiciatis quisquam earum! Officiis rerum pariatur incidunt, asperiores quasi veritatis fugiat ex saepe neque ab?',
+      iconUrl: 'assets/icons/restaurante.png',
+      iconSize: {
+        width: 35,
+        height: 35
+      },
+      coordinate: {
+        lat: -33.0081663,
+        lng: -58.5162183
+      }
+    }
+  }
+];
+
+
+
+
+interface Place {
+  id?: string;
+  name: string;
+  description: string;
+  marker: Marker;
+}
+  /*
+
+
+  }*/
+
+
+
+
+
+  /*setMyLocation() {
 
     this.map.setOnMapClickListener( async (res) => {
       console.log('MapClickListener -> ', res);
@@ -199,24 +274,7 @@ export class MapDireccionPedidoComponent  implements OnInit {
 
   }
 
-  async showDetailMarker(place: Place) {
-    const modal = await this.modalController.create({
-      component: PlaceDetailComponent,
-      componentProps: { place },
-      initialBreakpoint: 0.25,
-      breakpoints: [0, 0.25]
-    });
-    await modal.present();
-    const {data} = await modal.onWillDismiss();
-    if (data) {
-      const place = data.place as Place
-      console.log('dismiss modal -> ', data);
-      //this.carritoService.setCoordenadasPedido(place.marker.coordinate);
-      this.router.navigate(['/store/carrito'])
-    }
 
-
-  }
 
   async setMarkerMyPosition(latitude: number, longitude: number) {
     if (this.myLocation?.id) {
@@ -318,48 +376,4 @@ export class MapDireccionPedidoComponent  implements OnInit {
 
 }
 
-
-const places: Place[] = [
-  {
-    name: 'Lugar A',
-    description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui consequuntur eos eveniet sint sit necessitatibus perspiciatis quisquam earum! Officiis rerum pariatur incidunt, asperiores quasi veritatis fugiat ex saepe neque ab?',
-    marker: {
-      title: 'Lugar A',
-      snippet: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui consequuntur eos eveniet sint sit necessitatibus perspiciatis quisquam earum! Officiis rerum pariatur incidunt, asperiores quasi veritatis fugiat ex saepe neque ab?',
-      iconUrl: 'assets/icons/moto.png',
-      iconSize: {
-        width: 35,
-        height: 35
-      },
-      coordinate: {
-        lat: -2.90486435760786,
-        lng: -78.98343901973725
-      }
-    },
-  },
-  {
-    name: 'Lugar B',
-    description: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui consequuntur eos eveniet sint sit necessitatibus perspiciatis quisquam earum! Officiis rerum pariatur incidunt, asperiores quasi veritatis fugiat ex saepe neque ab?',
-    marker: {
-      title: 'Lugar B',
-      snippet: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Qui consequuntur eos eveniet sint sit necessitatibus perspiciatis quisquam earum! Officiis rerum pariatur incidunt, asperiores quasi veritatis fugiat ex saepe neque ab?',
-      iconUrl: 'assets/icons/restaurante.png',
-      iconSize: {
-        width: 35,
-        height: 35
-      },
-      coordinate: {
-        lat: -2.904086729776945,
-        lng: -78.98409206727841
-      }
-    }
-  }
-];
-
-
-interface Place {
-  id?: string;
-  name: string;
-  description: string;
-  marker: Marker;
-}*/
+*/

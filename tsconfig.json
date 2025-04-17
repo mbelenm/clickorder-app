@@ -22,6 +22,9 @@
     "useDefineForClassFields": false,
     "strictPropertyInitialization": false,
     "strictNullChecks": false,  // establer nulo unua variable
+    "types": ["google.maps"]
+
+
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

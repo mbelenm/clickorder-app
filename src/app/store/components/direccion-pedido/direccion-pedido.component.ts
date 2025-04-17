@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { IonIcon, IonItem, IonLabel, IonButtons, IonButton, IonRouterLink, IonTextarea, IonGrid, IonRow, IonCol } from "@ionic/angular/standalone";
-//import { MapDireccionPedidoComponent } from '../map-direccion-pedido/map-direccion-pedido.component';
+import { MapDireccionPedidoComponent } from '../map-direccion-pedido/map-direccion-pedido.component';
 import { RouterModule } from '@angular/router';
 import { CarritoService } from '../../services/carrito.service';
 import { Subscription } from 'rxjs';
@@ -17,7 +17,7 @@ import { FormsModule } from '@angular/forms';
     IonButton, IonButtons,
     IonLabel, IonIcon,
     IonItem,
-    //MapDireccionPedidoComponent,
+    MapDireccionPedidoComponent,
     RouterModule,
     IonRouterLink,
     IonTextarea,
