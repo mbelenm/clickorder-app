@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Subject } from 'rxjs';
 import { Models } from 'src/app/models/models';
 import { LocalStorageService } from '../../services/local-storage.service';
-//import { LatLng } from '@capacitor/google-maps/dist/typings/definitions';
+import { LatLng } from '@capacitor/google-maps/dist/typings/definitions';
 import { FirestoreService } from '../../firebase/firestore.service';
 import { InteractionService } from 'src/app/services/interaction.service';
 import { Router } from '@angular/router';
@@ -19,14 +19,13 @@ export class CarritoService {
   private carrito: Models.Tienda.Carrito;
   private carrito$ = new Subject<Models.Tienda.Carrito>;
 
-  //private infoPedido: Models.Tienda.InfoPedido;
-  //private infoPedido$ = new Subject<Models.Tienda.InfoPedido>;
+  private infoPedido: Models.Tienda.InfoPedido;
+  private infoPedido$ = new Subject<Models.Tienda.InfoPedido>;
 
-  constructor() {
-   //private router: Router
+  constructor(private router: Router) {
     this.loadCarrito();
-    //this.initInfoPedido();
-    
+    this.initInfoPedido();
+
   }
   private initCarrito() {
     this.carrito = {
@@ -113,7 +112,7 @@ export class CarritoService {
     this.localStorageService.setData(path, this.carrito);
   }
 
-  /*private initInfoPedido() {
+  private initInfoPedido() {
     this.infoPedido = {
       datos: null,
       fechaEntrega: null,
@@ -150,6 +149,7 @@ export class CarritoService {
   setCoordenadasPedido(coordinate: LatLng) {
     console.log('setCoordenadasPedido -> ', coordinate);
     this.infoPedido.direccionEntrega.coordinate = coordinate;
+    console.log('infoPedido -> ', this.infoPedido);
     this.infoPedido$.next(this.infoPedido);
   }
 
@@ -164,7 +164,7 @@ export class CarritoService {
         carrito: this.carrito,
         info: this.infoPedido,
         uid,
-        state: 'nuevo'
+        state: 'Nuevo',
       }
       try {
         await this.interactionService.showLoading('Realizando pedido...');
@@ -187,11 +187,7 @@ export class CarritoService {
   clearCarrito() {
     this.initCarrito();
     this.saveCarrito();
-  }*/
-
-
-
-
+  }
 
 
 

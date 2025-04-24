@@ -21,7 +21,7 @@ export class FechaPedidoComponent  implements OnInit {
   }
 
   ngOnInit() {
-    //this.carritoService.setFechaEntregaPedido(new Date(this.fechaEntega));
+    this.carritoService.setFechaEntregaPedido(new Date(this.fechaEntega));
   }
 
   setMaxDate() {
@@ -33,7 +33,7 @@ export class FechaPedidoComponent  implements OnInit {
 
   changeDate() {
     console.log('changeDate() -> ', this.fechaEntega);
-    //this.carritoService.setFechaEntregaPedido(new Date(this.fechaEntega));
+    this.carritoService.setFechaEntregaPedido(new Date(this.fechaEntega));
   }
 
 }

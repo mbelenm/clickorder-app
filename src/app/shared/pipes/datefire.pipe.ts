@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
   name: 'datefire',
-  standalone: false,
+  standalone: true,
 })
 export class DatefirePipe implements PipeTransform {
 

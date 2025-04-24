@@ -47,7 +47,7 @@ export class DatosPedidoComponent  implements OnInit {
   ngOnInit() {
       this.datosForm.controls.phone.statusChanges.subscribe( res => {
           console.log('phone -> ', res);
-         /* if (res == 'VALID') {
+          if (res == 'VALID') {
             const datos: Models.Tienda.DatosUserPedido = {
               id: this.user.uid,
               name: this.user.displayName,
@@ -55,7 +55,7 @@ export class DatosPedidoComponent  implements OnInit {
               phone: this.datosForm.controls.phone.value
             }
             this.carritoService.setDatosPedido(datos)
-          }*/
+          }
       })
   }
 

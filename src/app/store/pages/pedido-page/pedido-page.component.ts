@@ -1,4 +1,4 @@
-/*import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { User } from '@angular/fire/auth';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -11,13 +11,14 @@ import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton,
   IonItem,
   IonThumbnail,
   IonText, IonCard,
-  IonBadge} from '@ionic/angular/standalone';
+  IonBadge, IonSegment, IonSegmentButton, IonCardHeader, IonCardTitle, IonCardContent, IonFooter } from '@ionic/angular/standalone';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from 'src/app/firebase/authentication.service';
 import { FirestoreService } from 'src/app/firebase/firestore.service';
 import { Models } from 'src/app/models/models';
 import { DatefirePipe } from 'src/app/shared/pipes/datefire.pipe';
-//import { StepperModule, Stepper } from 'primeng/stepper';
+import { StepperModule, Stepper } from 'primeng/stepper';
+import { FormsModule } from '@angular/forms';
 //import { NotificationsModule } from 'src/app/notifications/notifications.module';
 
 @Component({
@@ -25,7 +26,7 @@ import { DatefirePipe } from 'src/app/shared/pipes/datefire.pipe';
   templateUrl: './pedido-page.component.html',
   styleUrls: ['./pedido-page.component.scss'],
   standalone: true,
-  imports: [IonCard,
+  imports: [IonFooter, IonCardContent, IonCardTitle, IonCardHeader, IonSegmentButton, IonSegment, IonCard,
     IonLabel,
     IonHeader, IonToolbar, IonTitle, IonButtons,
     IonButton, IonContent, IonMenuButton,
@@ -38,8 +39,9 @@ import { DatefirePipe } from 'src/app/shared/pipes/datefire.pipe';
     IonItem, IonThumbnail, IonText, IonBadge,
     DatefirePipe,
     CommonModule,
+    FormsModule,
     StepperModule,
-    NotificationsModule
+    //NotificationsModule
   ]
 })
 export class PedidoPageComponent  implements OnInit, OnDestroy {
@@ -51,7 +53,7 @@ export class PedidoPageComponent  implements OnInit, OnDestroy {
   cargando: boolean = true;
 
   pedido: Models.Tienda.Pedido;
-  step: number = null;
+  step: number = 0;
   steps = Models.Tienda.StepsPedido;
 
   constructor(private route: ActivatedRoute) {
@@ -97,6 +99,13 @@ export class PedidoPageComponent  implements OnInit, OnDestroy {
 
   }
 
+  onStepChange(event: any) {
+    // Evitar que se cambie de paso manualmente
+    if (event.detail.value !== this.step) {
+      // Mantener el paso en el valor actual (no permitir el cambio)
+      event.preventDefault();
+    }
+  }
+}
 
 
-}*/

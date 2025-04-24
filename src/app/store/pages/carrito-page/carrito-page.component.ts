@@ -65,11 +65,11 @@ export class CarritoPageComponent  implements OnInit {
       suscriberCarrito: Subscription;
 
       currentStep = 1; // 👈 NUEVO: control del paso actual
-      //infoPedido: Models.Tienda.InfoPedido;
+      infoPedido: Models.Tienda.InfoPedido;
 
       constructor() {
         this.loadCarrito();
-        //this.loadInfoPedido();
+        this.loadInfoPedido();
       }
 
       ngOnInit() {}
@@ -100,8 +100,8 @@ export class CarritoPageComponent  implements OnInit {
         this.currentStep = step;
       }
 
-      /*loadInfoPedido() {
-        this.infoPedido = this.carritoService.getInfoPedido();
+      loadInfoPedido() {
+       this.infoPedido = this.carritoService.getInfoPedido();
         this.carritoService.getInfoPedidoChanges().subscribe( res => {
           this.infoPedido = res;
           console.log('infoPedido in carrito-page -> ', this.infoPedido);
@@ -111,7 +111,7 @@ export class CarritoPageComponent  implements OnInit {
       pedir() {
         console.log('pedir infoPedido -> ', this.infoPedido);
         this.carritoService.pedir();
-      }*/
-
       }
+
+}
 

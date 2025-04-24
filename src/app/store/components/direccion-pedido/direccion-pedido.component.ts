@@ -29,20 +29,20 @@ export class DireccionPedidoComponent  implements OnInit {
   private carritoService: CarritoService = inject(CarritoService);
   suscriberInfoPedido: Subscription;
 
-  /*direccionPedido: Models.Tienda.DireccionPedido = {
+  direccionPedido: Models.Tienda.DireccionPedido = {
     coordinate: null,
     referencia: ''
-  }*/
+  }
 
 
 
   constructor() { }
 
   ngOnInit() {
-    //this.getInfoPedido();
+    this.getInfoPedido();
   }
 
-  /*getInfoPedido() {
+  getInfoPedido() {
     this.carritoService.getInfoPedidoChanges().subscribe( info  => {
         if (info?.direccionEntrega?.coordinate) {
           console.log('coordinate -> ', info?.direccionEntrega?.coordinate);
@@ -54,7 +54,7 @@ export class DireccionPedidoComponent  implements OnInit {
   setDireccionPedido() {
     console.log('setDireccionPedido -> ', this.direccionPedido);
     this.carritoService.setDireccionPedido(this.direccionPedido);
-  }*/
+  }
 
 
 }

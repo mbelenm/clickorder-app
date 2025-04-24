@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 import { PlaceDetailComponent } from '../place-detail/place-detail.component';
 import { CommonModule } from '@angular/common';
 
-//import { Geolocation } from '@capacitor/geolocation';
+import { Geolocation } from '@capacitor/geolocation';
 import { Capacitor } from '@capacitor/core';
 import { InteractionService } from '../../../services/interaction.service';
 import { CarritoService } from '../../services/carrito.service';
@@ -37,7 +37,7 @@ export class MapDireccionPedidoComponent  implements OnInit {
 
   map: GoogleMap;
   transparency: boolean = false;
-  //myLocation: Place;
+  myLocation: Place;
 
   private interactionService: InteractionService = inject(InteractionService)
   private carritoService: CarritoService = inject(CarritoService);
@@ -93,15 +93,15 @@ export class MapDireccionPedidoComponent  implements OnInit {
         this.map.enableCurrentLocation(true);
     }
 
-     this.setMarkerDemo();
-     this.setPlacesDemo();
-     this.addListeners();
-    // this.setMyLocation();
+     //this.setMarkerDemo();
+     //this.setPlacesDemo();
+     //this.addListeners();
+     //this.setMyLocation();
     this.getQueryParams();
-    // this.getCurrentPosition();
-    /*this.map.setOnMapClickListener( marker => {
+     //this.getCurrentPosition();
+    this.map.setOnMapClickListener( marker => {
       console.log('MarkerClickListener -> ', marker);
-      });*/
+      });
 
   }
 
@@ -112,10 +112,10 @@ export class MapDireccionPedidoComponent  implements OnInit {
     if (queryParams.readonly) {
       this.readonly = true
     } else {
-      //this.setMyLocation();
+      this.setMyLocation();
     }
     if (queryParams.lat && queryParams.lng) {
-      //this.setMarkerMyPosition( + queryParams.lat, + queryParams.lng)
+      this.setMarkerMyPosition( + queryParams.lat, + queryParams.lng)
     }
 
   }
@@ -172,12 +172,143 @@ export class MapDireccionPedidoComponent  implements OnInit {
         if (data) {
           const place = data.place as Place
           console.log('dismiss modal -> ', data);
-          //this.carritoService.setCoordenadasPedido(place.marker.coordinate);
+          this.carritoService.setCoordenadasPedido(place.marker.coordinate);
           this.router.navigate(['/store/carrito'])
         }
       }
 
+      setMyLocation() {
+
+        this.map.setOnMapClickListener( async (res) => {
+          console.log('MapClickListener -> ', res);
+          this.setMarkerMyPosition(res.latitude, res.longitude)
+        })
+
+        this.map.setOnMarkerDragEndListener( marker => {
+          console.log('MarkerDragEndListener -> ', marker);
+          this.myLocation.marker.coordinate = {
+            lat: marker.latitude,
+            lng: marker.longitude,
+          }
+          this.showDetailMarker(this.myLocation);
+          this.centerMarkerWithBounds(this.myLocation.marker);
+        });
+
+        this.map.setOnMarkerClickListener( marker => {
+          console.log('setMyLocation MarkerClickListener -> ', marker);
+          if (marker.markerId == this.myLocation.id) {
+            this.showDetailMarker(this.myLocation)
+          }
+        });
+
+        this.map.setOnMyLocationClickListener( res => {
+          console.log('MyLocationClickListener -> ', res);
+          this.setMarkerMyPosition(res.latitude, res.longitude)
+        });
+
+        this.map.setOnMyLocationButtonClickListener( res => {
+          console.log('MyLocationButtonClickListener -> ', res);
+          this.getCurrentPosition();
+        });
+
+
+      }
+      async setMarkerMyPosition(latitude: number, longitude: number) {
+        if (this.myLocation?.id) {
+          this.map.removeMarker(this.myLocation.id)
+        }
+        this.myLocation = {
+          name: 'Mi Ubicación',
+          description: 'Enviar pedido a está ubicación',
+          marker: {
+            title: 'Mi Ubicación',
+            snippet: 'Enviar pedido a está ubicación',
+            draggable: this.readonly ? false : true,
+            coordinate: {
+              lat: latitude,
+              lng: longitude,
+            }
+          }
+        }
+        const id = await this.map.addMarker(this.myLocation.marker);
+        this.myLocation.id = id;
+         //this.centerMarker(this.myLocation.marker);
+        this.centerMarkerWithBounds(this.myLocation.marker);
+        if (!this.readonly) {
+          this.showDetailMarker(this.myLocation)
+        }
+
+      }
+
+      centerMarkerWithBounds(marker: Marker) {
+        console.log('centerMarkerWithBounds');
+        // desplazamiento
+        const des: number = 0.0005;
+        const northeast = {
+          lat: marker.coordinate.lat + des,
+          lng: marker.coordinate.lng + des
+        }
+        const southwest = {
+          lat: marker.coordinate.lat - des,
+          lng: marker.coordinate.lng - des
+        }
+        let bounds = new LatLngBounds({
+          southwest: southwest,
+          center: marker.coordinate,
+          northeast: northeast,
+        })
+        this.map.fitBounds(bounds, 100)
+
+
+      }
+
+      centerMarker(marker: Marker) {
+        console.log('centerMarker');
+        this.map.setCamera({
+            coordinate: marker.coordinate,
+            zoom: 16,
+            // bearing: 45,
+            // angle: 45,
+            // animate: true,
+            // animationDuration: 1000
+        })
+
+      }
+
+
+async getCurrentPosition() {
+        await this.interactionService.showLoading('obteniendo tu ubicación...')
+        const check = await Geolocation.checkPermissions();
+        console.log('checkPermissions -> ', check);
+
+        if (check.location != 'granted') {
+          // solicitar permisos
+          if (check.location == 'denied') {
+            // no tenemos permisos
+            this.interactionService.dismissLoading();
+            return;
+          }
+          if (Capacitor.isNativePlatform()) {
+            const response = await Geolocation.requestPermissions({permissions: ['coarseLocation']});
+            console.log('requestPermissions response -> ', response);
+            if (response.location != 'granted') {
+              this.interactionService.dismissLoading();
+              return;
+            }
+          }
+        }
+        console.log('obteniendo posición');
+        const location = await Geolocation.getCurrentPosition({enableHighAccuracy: true})
+        console.log('Current position:', location.coords);
+        this.interactionService.dismissLoading();
+        this.setMarkerMyPosition(location.coords.latitude, location.coords.longitude)
+
+
+      }
+
 }
+
+
 
 
 
@@ -237,136 +368,8 @@ interface Place {
 
 
 
-  /*setMyLocation() {
+  /*
 
-    this.map.setOnMapClickListener( async (res) => {
-      console.log('MapClickListener -> ', res);
-      this.setMarkerMyPosition(res.latitude, res.longitude)
-    })
-
-    this.map.setOnMarkerDragEndListener( marker => {
-      console.log('MarkerDragEndListener -> ', marker);
-      this.myLocation.marker.coordinate = {
-        lat: marker.latitude,
-        lng: marker.longitude,
-      }
-      this.showDetailMarker(this.myLocation);
-      this.centerMarkerWithBounds(this.myLocation.marker);
-    });
-
-    this.map.setOnMarkerClickListener( marker => {
-      console.log('setMyLocation MarkerClickListener -> ', marker);
-      if (marker.markerId == this.myLocation.id) {
-        this.showDetailMarker(this.myLocation)
-      }
-    });
-
-    this.map.setOnMyLocationClickListener( res => {
-      console.log('MyLocationClickListener -> ', res);
-      this.setMarkerMyPosition(res.latitude, res.longitude)
-    });
-
-    this.map.setOnMyLocationButtonClickListener( res => {
-      console.log('MyLocationButtonClickListener -> ', res);
-      this.getCurrentPosition();
-    });
-
-
-  }
-
-
-
-  async setMarkerMyPosition(latitude: number, longitude: number) {
-    if (this.myLocation?.id) {
-      this.map.removeMarker(this.myLocation.id)
-    }
-    this.myLocation = {
-      name: 'Mi Ubicación',
-      description: 'Enviar pedido a está ubicación',
-      marker: {
-        title: 'Mi Ubicación',
-        snippet: 'Enviar pedido a está ubicación',
-        draggable: this.readonly ? false : true,
-        coordinate: {
-          lat: latitude,
-          lng: longitude,
-        }
-      }
-    }
-    const id = await this.map.addMarker(this.myLocation.marker);
-    this.myLocation.id = id;
-    // this.centerMarker(this.myLocation.marker);
-    this.centerMarkerWithBounds(this.myLocation.marker);
-    if (!this.readonly) {
-      this.showDetailMarker(this.myLocation)
-    }
-
-  }
-
-  centerMarkerWithBounds(marker: Marker) {
-    console.log('centerMarkerWithBounds');
-    // desplazamiento
-    const des: number = 0.0005;
-    const northeast = {
-      lat: marker.coordinate.lat + des,
-      lng: marker.coordinate.lng + des
-    }
-    const southwest = {
-      lat: marker.coordinate.lat - des,
-      lng: marker.coordinate.lng - des
-    }
-    let bounds = new LatLngBounds({
-      southwest: southwest,
-      center: marker.coordinate,
-      northeast: northeast,
-    })
-    this.map.fitBounds(bounds, 100)
-
-
-  }
-
-  centerMarker(marker: Marker) {
-    console.log('centerMarker');
-    this.map.setCamera({
-        coordinate: marker.coordinate,
-        zoom: 16,
-        // bearing: 45,
-        // angle: 45,
-        // animate: true,
-        // animationDuration: 1000
-    })
-
-  }
-
-  async getCurrentPosition() {
-    await this.interactionService.showLoading('obteniendo tu ubicación...')
-    const check = await Geolocation.checkPermissions();
-    console.log('checkPermissions -> ', check);
-
-    if (check.location != 'granted') {
-      // solicitar permisos
-      if (check.location == 'denied') {
-        // no tenemos permisos
-        this.interactionService.dismissLoading();
-        return;
-      }
-      if (Capacitor.isNativePlatform()) {
-        const response = await Geolocation.requestPermissions({permissions: ['coarseLocation']});
-        console.log('requestPermissions response -> ', response);
-        if (response.location != 'granted') {
-          this.interactionService.dismissLoading();
-          return;
-        }
-      }
-    }
-    console.log('obteniendo posición');
-    const location = await Geolocation.getCurrentPosition({enableHighAccuracy: true})
-    console.log('Current position:', location.coords);
-    this.interactionService.dismissLoading();
-    this.setMarkerMyPosition(location.coords.latitude, location.coords.longitude)
-
-
-  }
 
 
 

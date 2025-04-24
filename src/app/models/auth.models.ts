@@ -41,7 +41,7 @@ export namespace ModelsAuth {
       icon: string;
   }
 
-  export type IdProviderLogin = 'password' | 'google' | 'facebook' | 'apple'
+  export type IdProviderLogin = 'password' | 'google' ;
 
   export type Rol = 'admin' | 'cliente' | 'motorizado';
 

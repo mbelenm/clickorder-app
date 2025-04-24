@@ -1,4 +1,4 @@
-/*import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { IonButton, IonButtons, IonContent, IonHeader, IonMenuButton, IonTitle, IonToolbar, IonRow, IonGrid, IonCol, IonInfiniteScroll, IonInfiniteScrollContent, IonSpinner, IonRouterLink, IonIcon, IonLabel, IonRefresher, IonRefresherContent } from '@ionic/angular/standalone';
 import { ButtonCarritoComponent } from '../../components/button-carrito/button-carrito.component';
 import { User } from '@angular/fire/auth';
@@ -8,7 +8,8 @@ import { FirestoreService } from 'src/app/firebase/firestore.service';
 import { QueryDocumentSnapshot } from '@angular/fire/firestore';
 import { RouterModule } from '@angular/router';
 import { PedidoDetailComponent } from '../../components/pedido-detail/pedido-detail.component';
-import { NotificationsModule } from 'src/app/notifications/notifications.module';
+
+//import { NotificationsModule } from 'src/app/notifications/notifications.module';
 
 @Component({
   selector: 'app-mis-pedidos',
@@ -25,9 +26,10 @@ import { NotificationsModule } from 'src/app/notifications/notifications.module'
     RouterModule, IonRouterLink,
     IonIcon,
     PedidoDetailComponent,
-    IonRefresher, IonRefresherContent, NotificationsModule
+    IonRefresher, IonRefresherContent, /*NotificationsModule*/
   ]
 })
+
 export class MisPedidosComponent  implements OnInit {
 
   authenticationService: AuthenticationService = inject(AuthenticationService);
@@ -71,9 +73,9 @@ export class MisPedidosComponent  implements OnInit {
         if (this.pedidos) {
           this.pedidos.push(...res.docs);
         }
-        // else {
-        //   this.pedidos = res.docs;
-        // }
+         else {
+           this.pedidos = res.docs;
+         }
       }
 
       if (!this.pedidos) {
@@ -104,4 +106,4 @@ export class MisPedidosComponent  implements OnInit {
 
 
 
-}*/
+}

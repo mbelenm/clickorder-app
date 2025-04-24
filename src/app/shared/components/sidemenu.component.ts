@@ -23,7 +23,7 @@ import { FirestoreService } from 'src/app/firebase/firestore.service';
   styleUrls: ['./sidemenu.component.scss'],
   standalone: true,
   imports: [IonAvatar, IonItem, IonLabel,IonIcon,  //IonButton, IonButtons,
-    //IonHeader, IonContent,
+    IonHeader, IonContent,
     //IonToolbar, IonTitle,
     IonMenuToggle,
     RouterModule,
@@ -67,20 +67,23 @@ export class SidemenuComponent  implements OnInit {
       });
 
       // comparar versión de la app para indicar la novedad e ir a la descarga
-      ///this.compararVersion()
+      //this.compararVersion()
 
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+
+  }
 
   initMenu() {
+
     console.log('initMenu -> ', this.roles);
     this.menu = [];
     menu.forEach( opc => {
         let enable: boolean = false;
         if (opc.roles) {
-          // ['admin', 'motorizado', 'cliente'];
-          // this.roles = { admin: true, motorizado: true, cliente: true }
+           //['admin', 'motorizado', 'cliente'];
+           //this.roles = { admin: true, motorizado: true, cliente: true }
           if (this.roles) {
             opc.roles.every( role => {
                 if (this.roles[role]) {
@@ -214,7 +217,8 @@ const menu: Menu[] = [
   {  name: 'Usuarios', enlace: '/user/admin', icon: 'people', roles: ['admin']},
   {  name: 'Ajustes', enlace: '/backoffice/ajustes', icon: 'cog', roles: ['admin']},
   {  name: 'Tienda', enlace: '/store', icon: 'storefront'},
-  {  name: 'Mis pedidos', enlace: '/store/mis-pedidos', icon: 'cube', roles: ['cliente']},
+  {  name: 'Mis pedidos', enlace: '/store/mis-pedidos', icon: 'cube',},
+  {  name: 'Pedidos', enlace: '/backoffice/pedidos', icon: 'cube', roles: ['cliente']},
   {  name: 'Pedidos', enlace: '/backoffice/pedidos', icon: 'cube', roles: ['admin']},
   {  name: 'Pedidos', enlace: '/motorizado/pedidos', icon: 'cube', roles: ['motorizado']},
   {  name: 'Mis pedidos', enlace: '/motorizado/mis-pedidos', icon: 'bicycle', roles: ['motorizado']}
