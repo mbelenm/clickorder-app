@@ -24,11 +24,11 @@ const routes: Routes = [
     loadComponent: () => import('./pages/pedido-page/pedido-page.component').then((m) => m.PedidoPageComponent),
     canActivate: [guards.isLogin()]
   },
-  /*{
-    //path: 'map-recorrido-pedido',
-    //loadComponent: () => import('./pages/map-recorrido-pedido/map-recorrido-pedido.component').then((m) => m.MapRecorridoComponent),
-    //canActivate: [guards.isLogin()]
-  }*/
+  {
+    path: 'map-recorrido-pedido',
+    loadComponent: () => import('./pages/map-recorrido-pedido/map-recorrido-pedido.component').then((m) => m.MapRecorridoComponent),
+    canActivate: [guards.isLogin()]
+  }
 ];
 
 @NgModule({

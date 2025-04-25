@@ -1,6 +1,6 @@
 
 import { CUSTOM_ELEMENTS_SCHEMA, Component, OnInit, inject } from '@angular/core';
-//import { GoogleMap, Marker, LatLngBounds } from '@capacitor/google-maps';
+import { GoogleMap, Marker, LatLngBounds } from '@capacitor/google-maps';
 import { IonBackButton, IonButtons, IonContent, IonHeader, IonTitle,
   IonToolbar, MenuController, IonItem,
   IonLabel, IonIcon, IonButton,
@@ -25,7 +25,7 @@ import { FormsModule } from '@angular/forms';
 
 const apiKey = environment.firebaseConfig.apiKey;
 
-/*@Component({
+@Component({
   selector: 'app-map-recorrido-pedido',
   templateUrl: './map-recorrido-pedido.component.html',
   styleUrls: ['./map-recorrido-pedido.component.scss'],
@@ -50,7 +50,7 @@ export class MapRecorridoComponent implements OnInit {
   private authenticationService: AuthenticationService = inject(AuthenticationService);
 
   suscriberPedido: Subscription;
-  //pedido: Models.Tienda.Pedido;
+  pedido: Models.Tienda.Pedido;
 
   local: Place;
   home: Place;
@@ -90,8 +90,8 @@ export class MapRecorridoComponent implements OnInit {
         // draggable: false,
         center: {
           // The initial position to be rendered by the map
-          lat: -2.861306136001268,
-          lng: -78.99730914182649
+          lat: -33.0051882,
+          lng: -58.5132492
         },
         // tilt: 45,
 
@@ -190,11 +190,11 @@ export class MapRecorridoComponent implements OnInit {
     }
     const id = await this.map.addMarker(this.moto.marker);
     this.moto.id = id;
-    // this.centerMarker(this.myLocation.marker);
-    // this.centerMarkerWithBounds(this.myLocation.marker);
-    // if (!this.readonly) {
-    //   this.showDetailMarker(this.myLocation)
-    // }
+     //this.centerMarker(this.myLocation.marker);
+     //this.centerMarkerWithBounds(this.myLocation.marker);
+     //if (!this.readonly) {
+      // this.showDetailMarker(this.myLocation)
+     //}
 
   }
 
@@ -219,6 +219,8 @@ export class MapRecorridoComponent implements OnInit {
 
 
   }
+
+
 
   centerTwoMarkerWithBounds(marker1: Marker, marker2: Marker) {
     const northeast = {
@@ -291,8 +293,8 @@ const local: Place = {
         height: 35
       },
       coordinate: {
-        lat: -2.904086729776945,
-        lng: -78.98409206727841
+        lat:  -33.009168,
+        lng: -58.517219,
       }
     }
 }
@@ -302,4 +304,4 @@ interface Place {
   name: string;
   description: string;
   marker: Marker;
-}*/
+}
